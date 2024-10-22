@@ -2,13 +2,10 @@
 
 import json
 import logging
-from datetime import datetime
 
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import CarMake, CarModel
@@ -19,6 +16,7 @@ from .restapis import analyze_review_sentiments, get_request, post_review
 logger = logging.getLogger(__name__)
 
 # Create your views here.
+
 
 def get_cars(request):
     count = CarMake.objects.count()
