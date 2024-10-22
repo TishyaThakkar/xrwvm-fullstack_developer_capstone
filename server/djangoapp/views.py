@@ -33,16 +33,16 @@ def login_user(request):
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
-    
+
     # Try to check if provided credentials can be authenticated
     user = authenticate(username=username, password=password)
     response_data = {"userName": username}
-    
+
     if user is not None:
         # If user is valid, call login method to login current user
         login(request, user)
         response_data["status"] = "Authenticated"
-    
+
     return JsonResponse(response_data)
 
 
@@ -61,19 +61,24 @@ def registration(request):
     first_name = data['firstName']
     last_name = data['lastName']
     email = data['email']
-    
+
     username_exist = User.objects.filter(username=username).exists()
-    
+
     if not username_exist:
         # Create user in auth_user table
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password, email=email)
+        user = User.objects.create_user(
+            username=username,
+            first_name=first_name,
+            last_name=last_name, 
+            password=password,
+            email=email)
         login(request, user)
         return JsonResponse({"userName": username, "status": "Authenticated"})
     else:
-        return JsonResponse({"userName": username, "error": "Already Registered"})
+        return JsonResponse({"userName": username,
+                             "error": "Already Registered"})
 
 
-# Update the `get_dealerships` render list of dealerships, all by default, particular state if state is passed
 def get_dealerships(request, state="All"):
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
     dealerships = get_request(endpoint)
@@ -108,9 +113,10 @@ def add_review(request):
         data = json.loads(request.body)
         try:
             response = post_review(data)
-            return JsonResponse({"status": 200})
+            return JsonResponse({"status": 200, "data": response})
         except Exception as e:
             logger.error(f"Error in posting review: {e}")
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+            return JsonResponse({"status": 401,
+                                 "message": "Error in posting review"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
