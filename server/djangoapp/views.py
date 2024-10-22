@@ -23,7 +23,8 @@ def get_cars(request):
     if count == 0:
         initiate()
     car_models = CarModel.objects.select_related('car_make')
-    cars = [{"CarModel": car_model.name, "CarMake": car_model.car_make.name} for car_model in car_models]
+    cars = [{"CarModel": car_model.name,
+             "CarMake": car_model.car_make.name} for car_model in car_models]
     return JsonResponse({"CarModels": cars})
 
 
@@ -69,7 +70,7 @@ def registration(request):
         user = User.objects.create_user(
             username=username,
             first_name=first_name,
-            last_name=last_name, 
+            last_name=last_name,
             password=password,
             email=email)
         login(request, user)
